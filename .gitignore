@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Streamlit
+.streamlit/
+
+# Test images
+test_images/
+
+# Model files (not needed with OpenCV 5.x)
+wechat_qrcode_models/
+
+# Development/utility scripts
+generate_*.py
+test_*.py
+app_simple.py
+app_with_brightness_adjustment.py
+investigate_failure.py
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# License keys
+license_keys.txt
+*.key
