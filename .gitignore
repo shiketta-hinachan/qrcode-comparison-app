@@ -15,8 +15,8 @@ ENV/
 # Test images
 test_images/
 
-# Model files (not needed with OpenCV 5.x)
-wechat_qrcode_models/
+# Model files are now required for OpenCV 4.x
+# wechat_qrcode_models/
 
 # Development/utility scripts
 generate_*.py
