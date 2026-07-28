@@ -41,7 +41,7 @@
 pip install -r requirements.txt
 ```
 
-**注意**: OpenCV 5.0以降では、WeChatQRCodeは内蔵モデルを使用するため、外部モデルファイルのダウンロードは不要です。
+**注意**: このアプリはOpenCV 4.10系を使用しており、WeChatQRCodeのモデルファイルは`wechat_qrcode_models/`ディレクトリに含まれています。
 
 ## 実行方法
 
@@ -137,7 +137,7 @@ python -m streamlit run app.py
   - CNNベースの高精度検出
   - 低品質画像でも検出可能
   - 超解像処理を含む
-  - OpenCV 5.0以降は内蔵モデルを使用（外部ファイル不要）
+  - モデルファイル同梱（wechat_qrcode_models/）
 
 ## トラブルシューティング
 
@@ -150,8 +150,8 @@ pip install zxing-cpp
 
 ### OpenCV WeChatでエラーが出る
 
-- OpenCV 5.0以降を使用しているか確認: `python -c "import cv2; print(cv2.__version__)"`
-- OpenCV 5.0では内蔵モデルを使用するため、引数なしで初期化: `cv2.wechat_qrcode.WeChatQRCode()`
+- OpenCV 4.10系を使用しているか確認: `python -c "import cv2; print(cv2.__version__)"`
+- モデルファイルが`wechat_qrcode_models/`ディレクトリに存在するか確認
 
 ### OpenCVでQRコードが検出できない
 

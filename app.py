@@ -203,9 +203,32 @@ def test_opencv_wechat(image_array, image_name):
                 'error': error_msg
             }
 
-        # OpenCV 5.0以降は引数なしで初期化（内蔵モデル使用）
-        add_log(f"OpenCV WeChat [{image_name}]: Initializing WeChatQRCode detector...")
-        detector = cv2.wechat_qrcode.WeChatQRCode()
+        # モデルファイルのパス
+        import os
+        model_dir = os.path.join(os.path.dirname(__file__), 'wechat_qrcode_models')
+        detector_prototxt = os.path.join(model_dir, 'detect.prototxt')
+        detector_caffemodel = os.path.join(model_dir, 'detect.caffemodel')
+        sr_prototxt = os.path.join(model_dir, 'sr.prototxt')
+        sr_caffemodel = os.path.join(model_dir, 'sr.caffemodel')
+
+        # モデルファイルの存在確認
+        for model_file in [detector_prototxt, detector_caffemodel, sr_prototxt, sr_caffemodel]:
+            if not os.path.exists(model_file):
+                error_msg = f"Model file not found: {model_file}"
+                add_log(f"OpenCV WeChat [{image_name}]: ❌ {error_msg}", "ERROR")
+                return {
+                    'success': False,
+                    'data': None,
+                    'time': 0.0,
+                    'error': error_msg
+                }
+
+        # OpenCV 4.x系はモデルファイルを指定して初期化
+        add_log(f"OpenCV WeChat [{image_name}]: Initializing WeChatQRCode detector with model files...")
+        detector = cv2.wechat_qrcode.WeChatQRCode(
+            detector_prototxt, detector_caffemodel,
+            sr_prototxt, sr_caffemodel
+        )
         add_log(f"OpenCV WeChat [{image_name}]: Detector initialized successfully")
 
         start_time = time.time()
