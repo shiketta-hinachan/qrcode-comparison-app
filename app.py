@@ -39,6 +39,22 @@ st.markdown("""
 - ✅ 明度調整なし（ライブラリ側で自動処理）
 """)
 
+# OpenCV情報を表示
+with st.expander("🔧 環境情報", expanded=False):
+    st.text(f"OpenCV Version: {cv2.__version__}")
+    st.text(f"OpenCV Build Info:")
+    st.code(cv2.getBuildInformation(), language="text")
+
+    # wechat_qrcodeモジュールの状態を確認
+    if hasattr(cv2, 'wechat_qrcode'):
+        st.success("✅ cv2.wechat_qrcode module is available")
+        if hasattr(cv2.wechat_qrcode, 'WeChatQRCode'):
+            st.success("✅ cv2.wechat_qrcode.WeChatQRCode is available")
+        else:
+            st.error(f"❌ cv2.wechat_qrcode.WeChatQRCode NOT found. Available: {dir(cv2.wechat_qrcode)}")
+    else:
+        st.error("❌ cv2.wechat_qrcode module NOT found")
+
 # 画像アップロード
 st.header("📤 画像アップロード")
 uploaded_files = st.file_uploader(
@@ -163,9 +179,34 @@ def test_opencv_wechat(image_array, image_name):
     """OpenCV WeChatQRCodeで読み取る"""
     try:
         add_log(f"OpenCV WeChat [{image_name}]: テスト開始")
+        add_log(f"OpenCV version: {cv2.__version__}")
+
+        # wechat_qrcodeモジュールの存在確認
+        if not hasattr(cv2, 'wechat_qrcode'):
+            error_msg = "cv2.wechat_qrcode module not found. opencv-contrib-python-headless may not be installed correctly."
+            add_log(f"OpenCV WeChat [{image_name}]: ❌ {error_msg}", "ERROR")
+            return {
+                'success': False,
+                'data': None,
+                'time': 0.0,
+                'error': error_msg
+            }
+
+        # WeChatQRCodeクラスの存在確認
+        if not hasattr(cv2.wechat_qrcode, 'WeChatQRCode'):
+            error_msg = f"cv2.wechat_qrcode.WeChatQRCode not found. Available: {dir(cv2.wechat_qrcode)}"
+            add_log(f"OpenCV WeChat [{image_name}]: ❌ {error_msg}", "ERROR")
+            return {
+                'success': False,
+                'data': None,
+                'time': 0.0,
+                'error': error_msg
+            }
 
         # OpenCV 5.0以降は引数なしで初期化（内蔵モデル使用）
+        add_log(f"OpenCV WeChat [{image_name}]: Initializing WeChatQRCode detector...")
         detector = cv2.wechat_qrcode.WeChatQRCode()
+        add_log(f"OpenCV WeChat [{image_name}]: Detector initialized successfully")
 
         start_time = time.time()
         data, points = detector.detectAndDecode(image_array)
@@ -192,6 +233,8 @@ def test_opencv_wechat(image_array, image_name):
         import traceback
         add_log(f"OpenCV WeChat [{image_name}]: ❌ 例外 - {str(e)}", "ERROR")
         add_log(f"トレースバック:\n{traceback.format_exc()}", "ERROR")
+        add_log(f"cv2.__version__: {cv2.__version__}", "ERROR")
+        add_log(f"cv2.__file__: {cv2.__file__}", "ERROR")
         return {
             'success': False,
             'data': None,
